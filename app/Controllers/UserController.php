@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\UserModel;
+use CodeIgniter\Database\RawSql;
 
 class UserController extends BaseController
 {
@@ -26,7 +27,7 @@ class UserController extends BaseController
         }
 
         $userModel = model(UserModel::class);
-        $user = $userModel->findEmail($email);
+        $user = $userModel->where(new RawSql('`email` = \''.$email.'\''))->first();
         if (!isset($user)) {
             return redirect()->back()->with('status', ['type' => 'error', 'message' => 'E-mail does not exist'])->withInput();
         }
