@@ -25,23 +25,6 @@ class UserController extends BaseController
             return redirect()->back()->with('status', ['type' => 'error', 'message' => 'E-mail and password are required'])->withInput();
         }
 
-        session()->set('throttle_login', (session()->get('throttle_login') ?? 0) + 1);
-        if ((session()->get('throttle_login') ?? 0) >= 3) {
-            $recaptchaResponse = $this->request->getPost('g-recaptcha-response');
-
-            $jmpl = config('Jmpl');
-            $curl = service('curlrequest');
-            $response = $curl->setBody(http_build_query([
-                'secret' => $jmpl->recaptchaSecretKey,
-                'response' => $recaptchaResponse
-            ]))->request('POST', 'https://www.google.com/recaptcha/api/siteverify');
-            $response = @json_decode($response->getBody(), true);
-
-            if (!$response['success']) {
-                return redirect()->back()->with('status', ['type' => 'error', 'message' => 'Please complete the challenge!'])->withInput();
-            }
-        }
-
         $userModel = model(UserModel::class);
         $user = $userModel->findEmail($email);
         if (!isset($user)) {
@@ -56,15 +39,8 @@ class UserController extends BaseController
             return redirect()->back()->with('status', ['type' => 'error', 'message' => 'Incorrect password'])->withInput();
         }
 
-        session()->remove('throttle_login');
-
-        if ($user->gauth_is_activated) {
-            session()->set('otp', $user->id);
-            return redirect()->route('user.otp');
-        } else {
-            session()->set('auth', $user->id);
-            return redirect()->route('home')->with('status', ['type' => 'success', 'message' => 'Welcome back, <strong>'.esc($user->name).'</strong>!']);
-        }
+        session()->set('auth', $user->id);
+        return redirect()->route('home')->with('status', ['type' => 'success', 'message' => 'Welcome back, <strong>'.esc($user->name).'</strong>!']);
     }
 
     public function register()
