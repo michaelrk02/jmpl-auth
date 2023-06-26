@@ -23,6 +23,9 @@
                         <input id="name" type="text" class="form-control" name="name" placeholder="John Doe" value="<?php echo old('name'); ?>">
                     </div>
                     <div class="mb-3">
+                        Sudah mempunyai akun? <a href="<?php echo url_to('user.login'); ?>">Login</a>
+                    </div>
+                    <div class="mb-3">
                         <button type="submit" class="btn btn-primary">Register</button>
                     </div>
                 </form>

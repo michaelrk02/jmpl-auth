@@ -16,6 +16,9 @@
                         <label for="password" class="form-label">Password</label>
                         <input id="password" type="password" class="form-control" name="password" placeholder="********">
                     </div>
+                    <div class="mb-3">
+                        Belum mempunyai akun? <a href="<?php echo url_to('user.register'); ?>">Register</a>
+                    </div>
                     <?php if ($useCaptcha): ?>
                         <div class="mb-3">
                             <div class="g-recaptcha" data-sitekey="<?php echo $jmpl->recaptchaSiteKey; ?>"></div>
